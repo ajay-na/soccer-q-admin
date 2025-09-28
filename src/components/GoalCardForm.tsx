@@ -1,20 +1,24 @@
 import { Box, Button, MenuItem, TextField } from "@mui/material";
-import { Form, Formik } from "formik"; // ✅ use Formik's Form, not react-router-dom's
+import { Form, Formik } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
 import type { Team } from "../dtos/common.dto";
 import { getPlayeListByTeam } from "../service/supabase";
 import { formatDateToInput } from "../util.service";
 
+const Event_Type: string[] = ["GOAL", "YELLOW CARD", "RED CARD"];
 const GoalSchema = Yup.object().shape({
+  event: Yup.string()
+    .oneOf(Event_Type, "Invalid event type")
+    .required("Event is required"),
   team: Yup.string().required("Team is required"),
   player: Yup.string().required("Player name is required"),
-  event_time: Yup.date().required("Time is required"),
 });
 
 interface Prop {
   teams: Team[];
 }
+
 export default function GoalForm({ teams }: Prop) {
   const [players, setPlayers] = useState<any>([]);
   const fetchPlayers = async (teamId: number | string) => {
@@ -35,6 +39,7 @@ export default function GoalForm({ teams }: Prop) {
     <Box>
       <Formik
         initialValues={{
+          event: Event_Type[0],
           team: "",
           player: "",
           event_time: formatDateToInput(new Date()),
@@ -47,6 +52,21 @@ export default function GoalForm({ teams }: Prop) {
       >
         {({ errors, touched, handleChange, values }) => (
           <Form>
+            <TextField
+              select
+              fullWidth
+              label="Event"
+              name="event"
+              value={values.event}
+              onChange={handleChange}
+              margin="normal"
+              error={touched.event && Boolean(errors.event)}
+              helperText={touched.event && errors.event}
+            >
+              {Event_Type.map((event) => (
+                <MenuItem value={event}>{event}</MenuItem>
+              ))}
+            </TextField>
             <TextField
               select
               fullWidth
@@ -82,7 +102,7 @@ export default function GoalForm({ teams }: Prop) {
               ))}
             </TextField>
 
-            <TextField
+            {/* <TextField
               fullWidth
               type="datetime-local"
               label="Event Time"
@@ -93,7 +113,7 @@ export default function GoalForm({ teams }: Prop) {
               InputLabelProps={{ shrink: true }}
               error={touched.event_time && Boolean(errors.event_time)}
               helperText={touched.event_time && errors.event_time}
-            />
+            /> */}
 
             <Button
               type="submit"

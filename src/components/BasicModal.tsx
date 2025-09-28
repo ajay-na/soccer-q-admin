@@ -1,6 +1,6 @@
 import { Box, Button, Modal, Typography } from "@mui/material";
 import type { Team } from "../dtos/common.dto";
-import GoalForm from "./GoalForm";
+import GoalForm from "./GoalCardForm";
 const style = {
   position: "absolute",
   top: "50%",
@@ -19,6 +19,7 @@ interface Props {
   handleOpen: () => void;
   teams: Team[];
 }
+
 
 export default function BasicModal({
   open,
