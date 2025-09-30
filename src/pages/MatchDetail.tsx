@@ -106,7 +106,9 @@ export default function MatchDetail() {
       key: "events",
       text: "Events",
       icon: <SportsSoccerIcon />,
-      func: () => {},
+      func: () => {
+        setOpen(true);
+      },
     },
   ];
   useEffect(() => {
