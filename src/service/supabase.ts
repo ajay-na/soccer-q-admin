@@ -166,7 +166,10 @@ export async function addMatchEvent(payload: any) {
             minute: payload.event_time,
           },
         ],
-        team1_goal: matchData.data?.team1_goal + 1,
+        team1_goal:
+          payload.event === "goal"
+            ? matchData.data?.team1_goal + 1
+            : matchData.data?.team2_goal,
       };
     } else {
       updatePayload = {
@@ -178,7 +181,10 @@ export async function addMatchEvent(payload: any) {
             minute: payload.event_time,
           },
         ],
-        team2_goal: matchData.data?.team2_goal + 1,
+        team2_goal:
+          payload.event === "goal"
+            ? matchData.data?.team2_goal + 1
+            : matchData.data?.team2_goal,
       };
     }
     const query = supabase
