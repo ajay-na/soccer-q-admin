@@ -10,9 +10,15 @@ interface EventDto {
 
 interface Props {
   events: EventDto[];
+  match_start_time?: string;
+  half_time?: string;
 }
 
-export default function TeamStat({ events }: Props) {
+export default function TeamStat({
+  events,
+  match_start_time,
+  half_time,
+}: Props) {
   return (
     <Box>
       {events.map((event, index) => {
@@ -22,6 +28,8 @@ export default function TeamStat({ events }: Props) {
               event={event.event}
               player={event.player}
               minute={event.minute}
+              match_start_time={match_start_time}
+              half_time={half_time}
             />
           </Box>
         );

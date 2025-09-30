@@ -57,6 +57,8 @@ export default function MatchDetailCard(match: MatchDetailProps) {
         <MatchEvents
           team1Events={match.team1_events}
           team2Events={match.team2_events}
+          match_start_time={match.match_start_time}
+          half_time={match.half_time}
         />
       </CardContent>
     </Card>

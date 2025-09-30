@@ -9,8 +9,15 @@ interface EventDto {
 interface Props {
   team1Events: EventDto[];
   team2Events: EventDto[];
+  match_start_time?: string;
+  half_time?: string;
 }
-export default function MatchEvents({ team1Events, team2Events }: Props) {
+export default function MatchEvents({
+  team1Events,
+  team2Events,
+  match_start_time,
+  half_time,
+}: Props) {
   return (
     <Box
       sx={{
@@ -32,8 +39,16 @@ export default function MatchEvents({ team1Events, team2Events }: Props) {
           marginRight: "auto",
         }}
       >
-        <TeamStat events={team1Events} />
-        <TeamStat events={team2Events} />
+        <TeamStat
+          events={team1Events}
+          match_start_time={match_start_time}
+          half_time={half_time}
+        />
+        <TeamStat
+          events={team2Events}
+          match_start_time={match_start_time}
+          half_time={half_time}
+        />
       </Box>
     </Box>
   );

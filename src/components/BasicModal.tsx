@@ -1,4 +1,4 @@
-import { Box, Button, Modal, Typography } from "@mui/material";
+import { Box, Modal, Typography } from "@mui/material";
 import type { Team } from "../dtos/common.dto";
 import GoalForm from "./GoalCardForm";
 const style = {
@@ -18,18 +18,17 @@ interface Props {
   handleClose: () => void;
   handleOpen: () => void;
   teams: Team[];
+  matchId: number;
 }
-
 
 export default function BasicModal({
   open,
   handleClose,
-  handleOpen,
   teams,
+  matchId,
 }: Props) {
   return (
     <div>
-      <Button onClick={handleOpen}>Open modal</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -40,7 +39,7 @@ export default function BasicModal({
           <Typography variant="h6" component="h2">
             Add goal details
           </Typography>
-          <GoalForm teams={teams} />
+          <GoalForm teams={teams} id={matchId} />
         </Box>
       </Modal>
     </div>

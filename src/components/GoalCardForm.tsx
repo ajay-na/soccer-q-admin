@@ -3,23 +3,28 @@ import { Form, Formik } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
 import type { Team } from "../dtos/common.dto";
-import { getPlayeListByTeam } from "../service/supabase";
+import { addMatchEvent, getPlayeListByTeam } from "../service/supabase";
 import { formatDateToInput } from "../util.service";
 
-const Event_Type: string[] = ["GOAL", "YELLOW CARD", "RED CARD"];
+const Event_Type: string[] = ["goal", "yellow_card", "red_card  "];
 const GoalSchema = Yup.object().shape({
   event: Yup.string()
     .oneOf(Event_Type, "Invalid event type")
     .required("Event is required"),
-  team: Yup.string().required("Team is required"),
+  team: Yup.object({
+    id: Yup.string().required("Team is required"), // only validate id
+    name: Yup.string(),
+  }),
   player: Yup.string().required("Player name is required"),
+  event_time: Yup.string().required("Time is required"),
 });
 
 interface Prop {
   teams: Team[];
+  id: number;
 }
 
-export default function GoalForm({ teams }: Prop) {
+export default function GoalForm({ teams, id }: Prop) {
   const [players, setPlayers] = useState<any>([]);
   const fetchPlayers = async (teamId: number | string) => {
     try {
@@ -35,22 +40,30 @@ export default function GoalForm({ teams }: Prop) {
       setPlayers([]);
     }
   };
+  const handleSubmit = async (values: any) => {
+    try {
+      const data = await addMatchEvent({ ...values, id });
+      console.log(data);
+    } catch (error) {
+      throw error;
+    }
+  };
   return (
     <Box>
       <Formik
         initialValues={{
           event: Event_Type[0],
-          team: "",
+          team: { id: "", name: "" },
           player: "",
           event_time: formatDateToInput(new Date()),
         }}
         validationSchema={GoalSchema}
         onSubmit={(values, { resetForm }) => {
-          console.log("Form Submitted:", values);
+          handleSubmit(values);
           resetForm();
         }}
       >
-        {({ errors, touched, handleChange, values }) => (
+        {({ errors, touched, handleChange, values, setFieldValue }) => (
           <Form>
             <TextField
               select
@@ -71,15 +84,22 @@ export default function GoalForm({ teams }: Prop) {
               select
               fullWidth
               label="Team"
-              name="team"
-              value={values.team}
+              name="team.id"
+              value={values.team?.id ?? ""}
               onChange={async (e) => {
                 handleChange(e);
+                const selectedTeam = teams.find(
+                  (team) => team.id === Number(e.target.value)
+                );
                 await fetchPlayers(e.target.value);
+                setFieldValue("team", {
+                  id: selectedTeam?.id,
+                  name: selectedTeam?.name,
+                });
               }}
               margin="normal"
               error={touched.team && Boolean(errors.team)}
-              helperText={touched.team && errors.team}
+              helperText={touched.team?.name && errors.team?.id}
             >
               {teams.map((team) => (
                 <MenuItem value={team.id}>{team.name}</MenuItem>

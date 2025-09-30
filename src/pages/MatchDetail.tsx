@@ -3,7 +3,6 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import FlagIcon from "@mui/icons-material/Flag";
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import TimerIcon from "@mui/icons-material/Timer";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import { Box, Button } from "@mui/material";
 import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
@@ -20,13 +19,6 @@ export default function MatchDetail() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const { id } = useParams();
-  const funct = (text: string) => {
-    alert(text);
-  };
-
-  const goalFunc = (text: string) => {
-    handleOpen();
-  };
 
   type MatchAction = {
     key: string;
@@ -111,16 +103,10 @@ export default function MatchDetail() {
       },
     },
     {
-      key: "goal",
-      text: "Goal",
+      key: "events",
+      text: "Events",
       icon: <SportsSoccerIcon />,
-      func: () => goalFunc(""),
-    },
-    {
-      key: "card",
-      text: "Card",
-      icon: <WarningAmberIcon />,
-      func: () => funct("card"),
+      func: () => {},
     },
   ];
   useEffect(() => {
@@ -170,7 +156,7 @@ export default function MatchDetail() {
   const teams = [match.team1, match.team2];
   return (
     <Box>
-      <Box sx={{ minHeight: "250px", minWidth: "100%" }}>
+      <Box sx={{ height: "400px", minWidth: "100%" }}>
         <MatchDetailComponent {...match} />
       </Box>
       <Box display="flex" flexDirection="column" alignItems="center" mt={3}>
@@ -191,6 +177,7 @@ export default function MatchDetail() {
         handleClose={handleClose}
         handleOpen={handleOpen}
         teams={teams}
+        matchId={match.id}
       />
     </Box>
   );

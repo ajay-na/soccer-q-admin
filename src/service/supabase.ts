@@ -143,21 +143,51 @@ export async function getPlayeListByTeam(id: number | string) {
 
 export async function addMatchEvent(payload: any) {
   try {
-    const matchEvents = await supabase
+    const matchData = await supabase
       .from("matches")
       .select(
-        `team1_events,
+        `team1_id,
+         team2_id,
+         team1_goal,
+         team2_goal,
+         team1_events,
          team2_events`
       )
       .eq("id", payload.id)
       .single();
+    let updatePayload;
+    if (payload.team.id === matchData?.data?.team1_id) {
+      updatePayload = {
+        team1_events: [
+          ...matchData?.data?.team1_events,
+          {
+            event: payload.event,
+            player: payload.player,
+            minute: payload.event_time,
+          },
+        ],
+        team1_goal: matchData.data?.team1_goal + 1,
+      };
+    } else {
+      updatePayload = {
+        team2_events: [
+          ...matchData?.data?.team2_events,
+          {
+            event: payload.event,
+            player: payload.player,
+            minute: payload.event_time,
+          },
+        ],
+        team2_goal: matchData.data?.team2_goal + 1,
+      };
+    }
     const query = supabase
       .from("matches")
-      .update(payload)
+      .update(updatePayload)
       .eq("id", payload.id)
       .select()
       .single();
-    const { data, error } = await query;
+    const data = await query;
     return data;
   } catch (error: any) {
     console.error("Error inserting match:", error.message);

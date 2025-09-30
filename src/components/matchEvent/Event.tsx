@@ -6,6 +6,8 @@ interface Props {
   event: string;
   player: string;
   minute: number | string;
+  match_start_time?: string;
+  half_time?: string;
 }
 
 const eventMapping: Record<string, JSX.Element> = {
@@ -14,14 +16,14 @@ const eventMapping: Record<string, JSX.Element> = {
   red_card: <CardIcon color={"red"} />,
 };
 
-export default function Event({ event, player, minute }: Props) {
+export default function Event({ event, player }: Props) {
   return (
     <Box display="flex" alignItems={"center"}>
       <Box marginRight={1} marginTop={1} alignItems={"center"}>
         {eventMapping[event]}
       </Box>
       <Box>{player}</Box>
-      <Box marginLeft={1}>{minute}"</Box>
+      {/* <Box marginLeft={1}>{minute}"</Box> */}
     </Box>
   );
 }
